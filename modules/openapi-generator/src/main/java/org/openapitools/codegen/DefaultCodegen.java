@@ -2239,6 +2239,12 @@ public class DefaultCodegen implements CodegenConfig {
 
             Object isCallbackRequest = op.vendorExtensions.remove("x-callback-request");
             op.isCallbackRequest = Boolean.TRUE.equals(isCallbackRequest);
+
+            Object xOperationSettings = op.vendorExtensions.remove("x-operation-settings");
+            if(xOperationSettings instanceof HashMap) {
+                Object collectParameters = ((HashMap<String, Object>)xOperationSettings).remove("CollectParameters");
+                op.collectParameters = Boolean.TRUE.equals(collectParameters);
+            }
         }
 
         // store the original operationId for plug-in

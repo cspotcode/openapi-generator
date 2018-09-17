@@ -51,6 +51,7 @@ public class CodegenOperation {
     public List<CodegenParameter> cookieParams = new ArrayList<CodegenParameter>();
     public List<CodegenParameter> requiredParams = new ArrayList<CodegenParameter>();
     public List<CodegenParameter> optionalParams = new ArrayList<CodegenParameter>();
+    public boolean collectParameters;
     public List<CodegenSecurity> authMethods;
     public List<Tag> tags;
     public List<CodegenResponse> responses = new ArrayList<CodegenResponse>();
@@ -344,6 +345,8 @@ public class CodegenOperation {
             return false;
         if (optionalParams != null ? !optionalParams.equals(that.optionalParams) : that.optionalParams!= null)
             return false;
+        if (collectParameters != that.collectParameters)
+            return false;
         if (authMethods != null ? !authMethods.equals(that.authMethods) : that.authMethods != null)
             return false;
         if (tags != null ? !tags.equals(that.tags) : that.tags != null)
@@ -416,6 +419,7 @@ public class CodegenOperation {
         result = 31 * result + (cookieParams != null ? cookieParams.hashCode() : 0);
         result = 31 * result + (requiredParams!= null ? requiredParams.hashCode() : 0);
         result = 31 * result + (optionalParams != null ? optionalParams.hashCode() : 0);
+        result = 31 * result + (collectParameters ? 13:31);
         result = 31 * result + (authMethods != null ? authMethods.hashCode() : 0);
         result = 31 * result + (tags != null ? tags.hashCode() : 0);
         result = 31 * result + (responses != null ? responses.hashCode() : 0);

@@ -84,13 +84,36 @@ export const {{classname}}FetchParamCreator = function (configuration?: Configur
          {{#summary}}
          * @summary {{&summary}}
          {{/summary}}
+         {{#collectParameters}}
+         * TODO collectParameters docs
+         {{/collectParameters}}
+         {{^collectParameters}}
          {{#allParams}}
          * @param {{=<% %>=}}{<%&dataType%>}<%={{ }}=%> {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{description}}
          {{/allParams}}
+         {{/collectParameters}}
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}, {{/allParams}}options: any = {}): FetchArgs {
+        {{nickname}}(
+            {{^collectParameters}}
+            {{#allParams}}
+            {{paramName}}{{^required}}?{{/required}}: {{{dataType}}},
+            {{/allParams}}
+            {{/collectParameters}}
+            {{#collectParameters}}
+            {
+                {{#allParams}}
+                {{paramName}},
+                {{/allParams}}
+            }: {
+                {{#allParams}}
+                {{paramName}}{{^required}}?{{/required}}: {{{dataType}}},
+                {{/allParams}}
+            } = {},
+            {{/collectParameters}}
+            options: any = {}
+        ): FetchArgs {
     {{#allParams}}
     {{#required}}
             // verify required parameter '{{paramName}}' is not null or undefined
@@ -258,14 +281,50 @@ export const {{classname}}Fp = function(configuration?: Configuration) {
          {{#summary}}
          * @summary {{&summary}}
          {{/summary}}
+         {{#collectParameters}}
+         * TODO docs for collectParameters
+         {{/collectParameters}}
+         {{^collectParameters}}
          {{#allParams}}
          * @param {{=<% %>=}}{<%&dataType%>}<%={{ }}=%> {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{description}}
          {{/allParams}}
+         {{/collectParameters}}
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}, {{/allParams}}options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Response{{/returnType}}> {
-            const localVarFetchArgs = {{classname}}FetchParamCreator(configuration).{{nickname}}({{#allParams}}{{paramName}}, {{/allParams}}options);
+        {{nickname}}(
+            {{#collectParameters}}
+            {
+                {{#allParams}}
+                    {{paramName}},
+                {{/allParams}}
+            }: {
+                {{#allParams}}
+                    {{paramName}}{{^required}}?{{/required}}: {{{dataType}}},
+                {{/allParams}}
+            } = {}
+            {{/collectParameters}}
+            {{^collectParameters}}
+            {{#allParams}}
+                {{paramName}}{{^required}}?{{/required}}: {{{dataType}}},
+            {{/allParams}}
+            {{/collectParameters}}
+            options?: any): (fetch?: FetchAPI, basePath?: string) => Promise<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Response{{/returnType}}> {
+            const localVarFetchArgs = {{classname}}FetchParamCreator(configuration).{{nickname}}(
+                {{#collectParameters}}
+                    {
+                    {{#allParams}}
+                        {{paramName}},
+                    {{/allParams}}
+                    },
+                {{/collectParameters}}
+                {{^collectParameters}}
+                    {{#allParams}}
+                        {{paramName}},
+                    {{/allParams}}
+                {{/collectParameters}}
+                options
+            );
             return (fetch: FetchAPI = portableFetch, basePath: string = BASE_PATH) => {
                 return fetch(basePath + localVarFetchArgs.url, localVarFetchArgs.options).then((response) => {
                     if (response.status >= 200 && response.status < 300) {
@@ -299,8 +358,40 @@ export const {{classname}}Factory = function (configuration?: Configuration, fet
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}, {{/allParams}}options?: any) {
-            return {{classname}}Fp(configuration).{{nickname}}({{#allParams}}{{paramName}}, {{/allParams}}options)(fetch, basePath);
+        {{nickname}}(
+            {{#collectParameters}}
+            {
+                {{#allParams}}
+                {{paramName}},
+                {{/allParams}}
+            }: {
+                {{#allParams}}
+                {{paramName}}{{^required}}?{{/required}}: {{{dataType}}},
+                {{/allParams}}
+            } = {}
+            {{/collectParameters}}
+            {{^collectParameters}}
+            {{#allParams}}
+            {{paramName}}{{^required}}?{{/required}}: {{{dataType}}},
+            {{/allParams}}
+            {{/collectParameters}}
+            options?: any
+        ) {
+            return {{classname}}Fp(configuration).{{nickname}}(
+                {{#collectParameters}}
+                {
+                    {{#allParams}}
+                    {{paramName}},
+                    {{/allParams}}
+                },
+                {{/collectParameters}}
+                {{^collectParameters}}
+                {{#allParams}}
+                {{paramName}},
+                {{/allParams}}
+                {{/collectParameters}}
+                options
+            )(fetch, basePath);
         },
     {{/operation}}
     };
@@ -327,7 +418,24 @@ export interface {{classname}}Interface {
      * @throws {RequiredError}
      * @memberof {{classname}}Interface
      */
-    {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}, {{/allParams}}options?: any): Promise<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}{}{{/returnType}}>;
+    {{nickname}}(
+        {{#collectParameters}}
+        {
+            {{#allParams}}
+            {{paramName}},
+            {{/allParams}}
+        }: {
+            {{#allParams}}
+            {{paramName}}{{^required}}?{{/required}}: {{{dataType}}},
+            {{/allParams}}
+        } = {}
+        {{/collectParameters}}
+        {{^collectParameters}}
+        {{#allParams}}
+        {{paramName}}{{^required}}?{{/required}}: {{{dataType}}},
+        {{/allParams}}
+        {{/collectParameters}}
+        options?: any): Promise<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}{}{{/returnType}}>;
 
 {{/operation}}
 }
@@ -359,8 +467,40 @@ export class {{classname}} extends BaseAPI {
      * @throws {RequiredError}
      * @memberof {{classname}}
      */
-    public {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}, {{/allParams}}options?: any) {
-        return {{classname}}Fp(this.configuration).{{nickname}}({{#allParams}}{{paramName}}, {{/allParams}}options)(this.fetch, this.basePath);
+    public {{nickname}}(
+        {{#collectParameters}}
+        {
+            {{#allParams}}
+            {{paramName}},
+            {{/allParams}}
+        }: {
+            {{#allParams}}
+            {{paramName}}{{^required}}?{{/required}}: {{{dataType}}},
+            {{/allParams}}
+        } = {}
+        {{/collectParameters}}
+        {{^collectParameters}}
+        {{#allParams}}
+        {{paramName}}{{^required}}?{{/required}}: {{{dataType}}},
+        {{/allParams}}
+        {{/collectParameters}}
+        options?: any
+    ) {
+        return {{classname}}Fp(this.configuration).{{nickname}}(
+            {{#collectParameters}}
+            {
+                {{#allParams}}
+                {{paramName}},
+                {{/allParams}}
+            },
+            {{/collectParameters}}
+            {{^collectParameters}}
+            {{#allParams}}
+            {{paramName}},
+            {{/allParams}}
+            {{/collectParameters}}
+            options
+        )(this.fetch, this.basePath);
     }
 
     {{/operation}}
