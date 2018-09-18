@@ -110,7 +110,7 @@ export const {{classname}}FetchParamCreator = function (configuration?: Configur
                 {{#allParams}}
                 {{paramName}}{{^required}}?{{/required}}: {{{dataType}}},
                 {{/allParams}}
-            } = {},
+            },
             {{/collectParameters}}
             options: any = {}
         ): FetchArgs {
@@ -302,7 +302,7 @@ export const {{classname}}Fp = function(configuration?: Configuration) {
                 {{#allParams}}
                     {{paramName}}{{^required}}?{{/required}}: {{{dataType}}},
                 {{/allParams}}
-            } = {}
+            },
             {{/collectParameters}}
             {{^collectParameters}}
             {{#allParams}}
@@ -368,7 +368,7 @@ export const {{classname}}Factory = function (configuration?: Configuration, fet
                 {{#allParams}}
                 {{paramName}}{{^required}}?{{/required}}: {{{dataType}}},
                 {{/allParams}}
-            } = {}
+            },
             {{/collectParameters}}
             {{^collectParameters}}
             {{#allParams}}
@@ -428,7 +428,7 @@ export interface {{classname}}Interface {
             {{#allParams}}
             {{paramName}}{{^required}}?{{/required}}: {{{dataType}}},
             {{/allParams}}
-        } = {}
+        },
         {{/collectParameters}}
         {{^collectParameters}}
         {{#allParams}}
@@ -477,7 +477,7 @@ export class {{classname}} extends BaseAPI {
             {{#allParams}}
             {{paramName}}{{^required}}?{{/required}}: {{{dataType}}},
             {{/allParams}}
-        } = {}
+        },
         {{/collectParameters}}
         {{^collectParameters}}
         {{#allParams}}
